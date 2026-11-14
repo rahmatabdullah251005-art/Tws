@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#064e3b"><title>متقن — Setoran Hafalan</title>
+<style>
+:root{--green:#064e3b;--deep:#052e24;--gold:#d9a441;--cream:#f7f8f4;--ink:#17231e;--muted:#6b7770;--line:#e3e9e4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(140deg,var(--green),var(--deep));color:#fff;padding:23px 18px 24px;border-radius:0 0 24px 24px}
+.brand{display:flex;align-items:center;gap:12px}.mark{width:48px;height:48px;border:1px solid #d9a441;border-radius:15px;display:grid;place-items:center;color:#f8e6b5;font-size:24px;font-weight:800}
+h1{font-size:22px;margin:0}header p{margin:2px 0 0;color:#d7e8df;font-size:12px}
+.wrap{padding:15px;max-width:720px;margin:auto}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 3px 14px #0c3b1c08}
+label{display:block;font-size:12px;font-weight:650;color:var(--muted);margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #dce5de;border-radius:11px;padding:12px;font:inherit;background:#fff;color:var(--ink);outline:none}input:focus,select:focus,textarea:focus{border-color:var(--green)}
+.stats{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:700;margin:13px 0 8px}.bar{height:9px;background:#e8eee9;border-radius:20px;overflow:hidden}.bar span{height:100%;display:block;background:linear-gradient(90deg,#0b7655,var(--gold));border-radius:20px;width:0;transition:width .25s ease}
+.filters{display:flex;gap:7px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 13px;color:var(--muted);font-weight:650;cursor:pointer}.chip.active{background:var(--green);border-color:var(--green);color:#fff}
+.session{background:#fff;border:1px solid var(--line);border-radius:15px;margin-bottom:10px;overflow:hidden}.session summary{list-style:none;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}.session summary::-webkit-details-marker{display:none}.s-title{font-weight:750}.s-sub{font-size:12px;color:var(--muted);margin-top:3px}.tag{font-size:11px;background:#f0f3f1;color:var(--muted);padding:5px 9px;border-radius:20px;white-space:nowrap;font-weight:600}.tag.done{background:#edf5ef;color:#176344}.details{border-top:1px solid var(--line);padding:13px}.rub{font-size:13px;line-height:1.65;padding:9px 10px;background:#f6f8f5;border-radius:10px;margin-bottom:7px}.rub b{color:var(--green)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{margin:9px 0}.full{grid-column:1/-1}.btn{border:0;background:var(--green);color:white;padding:12px 16px;border-radius:11px;font-weight:750;width:100%;font-size:14px;cursor:pointer}.saved{color:#147448;font-size:12px;font-weight:700;margin-top:8px}.empty{text-align:center;color:var(--muted);padding:24px}
+footer{text-align:center;color:#849089;font-size:11px;padding:20px}
+</style></head><body>
+<header><div class="brand"><div class="mark">م</div><div><h1>متقن</h1><p>Catatan Setoran Hafalan Al-Qur'an</p></div></div></header>
+<div class="wrap">
+ <section class="panel">
+  <label for="student">Nama penghafal</label><input id="student" placeholder="Masukkan nama..." autocomplete="name">
+  <div class="stats"><span id="count">0 dari 120 setoran</span><span id="percent">0%</span></div><div class="bar"><span id="progress"></span></div>
+ </section>
+ <div class="filters" id="filters">
+  <button class="chip active" data-filter="0">Semua juz</button><button class="chip" data-filter="1">1–10</button><button class="chip" data-filter="2">11–20</button><button class="chip" data-filter="3">21–30</button>
+ </div>
+ <div id="list"></div>
+ <footer>متقن • Data tersimpan di perangkat ini</footer>
+</div>
+<script src="sessions.js"></script>
+<script>
+const KEY='mutqin_records_v1', NAME='mutqin_student_v1';
+let records={};
+try{records=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){records={};}
+
+const student=document.getElementById('student');
+student.value=localStorage.getItem(NAME)||'';
+student.addEventListener('input',()=>localStorage.setItem(NAME,student.value));
+
+function esc(str){
+  return String(str||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function clearMsg(n){
+  const el=document.getElementById('saved-'+n);
+  if(el)el.textContent='';
+}
+
+function save(n){
+  const r={
+    date:document.getElementById('date-'+n).value,
+    grade:document.getElementById('grade-'+n).value,
+    notes:document.getElementById('notes-'+n).value
+  };
+  if(!r.date&&!r.grade&&!r.notes){
+    delete records[n];
+  }else{
+    records[n]=r;
+  }
+  localStorage.setItem(KEY,JSON.stringify(records));
+  renderStats();
+
+  const tag=document.getElementById('tag-'+n);
+  if(tag){
+    tag.textContent=r.grade?'✓ '+r.grade:'Belum setor';
+    tag.className='tag'+(r.grade?' done':'');
+  }
+  const msg=document.getElementById('saved-'+n);
+  if(msg)msg.textContent='✓ Tersimpan di perangkat';
+}
+
+function renderStats(){
+  const total=(typeof SESSIONS!=='undefined')?SESSIONS.length:120;
+  const done=Object.values(records).filter(x=>x&&x.grade).length;
+  const p=total?Math.round(done/total*100):0;
+  document.getElementById('count').textContent=done+' dari '+total+' setoran';
+  document.getElementById('percent').textContent=p+'%';
+  document.getElementById('progress').style.width=p+'%';
+}
+
+function card(s){
+  const r=records[s.no]||{};
+  const grades=['Mumtaz','Jayyid Jiddan','Jayyid','Maqbul','Dhaif'].map(g=>`<option value="${g}" ${r.grade===g?'selected':''}>${g}</option>`).join('');
+  return `<details class="session"><summary><div><div class="s-title">Juz ${s.juz} · ${esc(s.setoran)}</div><div class="s-sub">${esc(s.rubu1)} &amp; ${esc(s.rubu2)}</div></div><span id="tag-${s.no}" class="tag ${r.grade?'done':''}">${r.grade?'✓ '+esc(r.grade):'Belum setor'}</span></summary><div class="details">
+<div class="rub"><b>${esc(s.rubu1)}</b><br>Awal: ${esc(s.awal1)} &nbsp;·&nbsp; Akhir: ${esc(s.akhir1)}</div>
+<div class="rub"><b>${esc(s.rubu2)}</b><br>Awal: ${esc(s.awal2)} &nbsp;·&nbsp; Akhir: ${esc(s.akhir2)}</div>
+<div class="grid"><div class="field"><label for="date-${s.no}">Tanggal setoran</label><input id="date-${s.no}" type="date" value="${esc(r.date||'')}" onchange="clearMsg(${s.no})"></div>
+<div class="field"><label for="grade-${s.no}">Nilai hafalan</label><select id="grade-${s.no}" onchange="clearMsg(${s.no})"><option value="">Pilih nilai</option>${grades}</select></div>
+<div class="field full"><label for="notes-${s.no}">Catatan / kesalahan</label><textarea id="notes-${s.no}" rows="2" placeholder="Catatan penguji..." oninput="clearMsg(${s.no})">${esc(r.notes||'')}</textarea></div></div>
+<button class="btn" type="button" onclick="save(${s.no})">Simpan setoran</button><div class="saved" id="saved-${s.no}"></div>
+</div></details>`;
+}
+
+let filter=0;
+function render(){
+  if(typeof SESSIONS==='undefined'){
+    document.getElementById('list').innerHTML='<div class="empty">Data sesi (sessions.js) gagal dimuat.</div>';
+    return;
+  }
+  const items=SESSIONS.filter(s=>filter===0||(filter===1&&s.juz<=10)||(filter===2&&s.juz>=11&&s.juz<=20)||(filter===3&&s.juz>=21));
+  document.getElementById('list').innerHTML=items.length?items.map(card).join(''):'<div class="empty">Tidak ada data setoran.</div>';
+}
+
+document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{
+  filter=+b.dataset.filter;
+  document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+}));
+
+render();
+renderStats();
+</script></body></html>
