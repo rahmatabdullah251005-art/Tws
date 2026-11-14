@@ -1,0 +1,8 @@
+{
+  "name": "متقن",
+  "description": "Aplikasi pencatatan setoran hafalan Al-Qur'an 30 juz offline (120 sesi, 240 rubu') dengan penyimpanan lokal di perangkat.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

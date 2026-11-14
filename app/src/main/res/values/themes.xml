@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Mutqin" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/mutqin_cream</item>
+    </style>
+    <color name="mutqin_cream">#F7F8F4</color>
+</resources>

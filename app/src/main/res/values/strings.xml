@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">متقن</string>
+    <string name="header_emblem">م</string>
+    <string name="header_subtitle">Catatan Setoran Hafalan Al-Qur\'an</string>
+    <string name="label_student_name">Nama penghafal</string>
+    <string name="placeholder_student_name">Masukkan nama...</string>
+    <string name="stats_progress_format">%1$d dari %2$d setoran</string>
+    <string name="stats_rubu_progress_format">%1$d dari %2$d rubu\' selesai</string>
+    <string name="stats_percent_format">%1$d%%</string>
+    <string name="filter_all_juz">Semua juz</string>
+    <string name="filter_juz_1_10">1–10</string>
+    <string name="filter_juz_11_20">11–20</string>
+    <string name="filter_juz_21_30">21–30</string>
+    <string name="session_title_format">Juz %1$d · %2$s</string>
+    <string name="session_subtitle_format">%1$s &amp; %2$s</string>
+    <string name="status_not_submitted">Belum setor</string>
+    <string name="status_done_format">✓ %1$s</string>
+    <string name="rubu_range_format">Awal: %1$s (%2$s)  ·  Akhir: %3$s (%4$s)</string>
+    <string name="label_submission_date">Tanggal setoran</string>
+    <string name="placeholder_submission_date">Pilih tanggal</string>
+    <string name="label_hafalan_grade">Nilai hafalan</string>
+    <string name="placeholder_select_grade">Pilih nilai</string>
+    <string name="label_notes">Catatan / kesalahan</string>
+    <string name="placeholder_notes">Catatan penguji...</string>
+    <string name="action_save_submission">Simpan setoran</string>
+    <string name="feedback_saved_on_device">✓ Tersimpan di perangkat</string>
+    <string name="empty_sessions_message">Tidak ada data setoran.</string>
+    <string name="footer_device_storage">متقن • Data tersimpan di perangkat ini</string>
+    <string name="action_confirm_date">Pilih</string>
+    <string name="action_cancel">Batal</string>
+    <string name="cd_expand_session">Buka atau tutup detail setoran</string>
+    <string name="cd_clear_date">Hapus tanggal</string>
+    <string name="cd_pick_date">Pilih tanggal setoran</string>
+    <string name="cd_toggle_rubu_status">Tandai status hafalan rubu\'</string>
+</resources>
